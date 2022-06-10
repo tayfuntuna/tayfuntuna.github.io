@@ -1,4 +1,9 @@
-## Welcome to GitHub Pages
+## Friday Grubuna Selam 
+
+
+
+
+
 
 You can use the [editor on GitHub](https://github.com/tayfuntuna/tayfuntuna.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
 
