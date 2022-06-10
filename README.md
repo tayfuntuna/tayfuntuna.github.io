@@ -1,4 +1,4 @@
-## Friday Grubuna Selam 
+## Just another page
 
 
 
