@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+         <title>Machine Learning in Browser</title>
+       
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+      
+    	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
+ 
+        <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
+        <script> 
+        	var loadedJson = '';
+        	function evaluatePython0(){
+        	 	evaluatePython();
+        	};
+    </script>
+    </head>
+    <body>
+    	
+    <div class="container-fluid" style ='padding-left: 10px; padding-right: 10px;'>
+        <div class="row" style ='padding-left: 10px; padding-right: 10px;'>
+        	<br/>
+        </div>
+         <div class="row">
+            <div class="col">
+		        <div class="input-group mb-3">
+		          <span class="input-group-text" id="basic-addon1">Enter table name:</span>
+				  <input type="text" id ='tableNameInput' class="form-control" placeholder="Enter Table name" aria-label="Table name" aria-describedby="button-addon2" value='sn_vtb_ah_hr_criticality_4k' text = 'sn_vtb_ah_hr_criticality_4k'/>
+				  <button class="btn btn-info" type="button" id="loadDataButton" onclick="loadTableDataForClick()">Load Data</button>
+				 </div>
+	       </div>
+   
+            <div class="col">
+            	 
+       		</div>
+       </div>
+  		<div class="row">
+            <div class="col">
+		    	<table id ='table' class="table table-striped" >
+				  <thead>
+				    <!--<tr>
+				     
+				      <th scope="col">Number</th>
+				      <th scope="col">Short description</th>
+				      <th scope="col">Priority</th>
+				    </tr>-->
+				  </thead>
+				  <tbody id ='tbody'>
+				    
+				  </tbody>
+				</table>
+			</div>
+       	</div>
+       	<div class="row">
+            <div class="col">
+            	<div id ='response'/>
+            	</div>
+            	<div id ='divPlot' style='visibility: hidden;' class="col">
+            	  <button class="btn btn-danger" type="button" id="plotData" onclick="plotData()"> <i class="bi bi-graph-up"></i>  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-bar-graph" viewBox="0 0 16 16">
+  <path d="M4.5 12a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1z"/>
+  <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+</svg>Plot Data</button>
+       		</div>
+       		</div>
+    	</div>
+
+    	      <!-- Heading Row-->
+        <div class="row" style ='padding-left: 10px; padding-right: 10px;'>
+            <div class="col">
+                <p> You can execute any Python code. Just enter something in the box below and click the button. </p>
+                <textarea id="code" style="width: 100%;font-size:12px" rows="30">
+
+import pandas as pd
+from sklearn import metrics
+import json
+import numpy as np
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import Pipeline
+
+df = pd.DataFrame.from_dict(json.loads(data)['result'])
+df.columns
+df.head(5)
+df['description']
+source_column = 'description'
+label_column = 'priority'
+text_clf = Pipeline([
+    ('vect', CountVectorizer()),
+    ('tfidf', TfidfTransformer()),
+    ('clf', MultinomialNB()),
+])
+
+text_clf.fit(df[source_column], df[label_column])
+
+docs_test = df[source_column].tail(30)
+predicted = text_clf.predict(docs_test)
+np.mean(predicted == df[label_column].tail(30))
+
+metrics.classification_report(df[label_column].tail(30), predicted)
+
+
+                   </textarea>
+                <button id ='runButton' class="btn btn-primary" onclick="evaluatePython0()">Run</button>
+                <div id ='initilizingGif' style='visibility: hidden;'>
+                	Initilizing and loading packages, please wait.
+
+	                <div class="spinner-grow text-primary" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-secondary" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-success" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-danger" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-warning" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-info" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-dark" role="status">
+					  <span class="sr-only"></span>
+					</div>
+				</div>
+				<div id ='inProgressGif' style='visibility: hidden;'>
+					  Executing please wait.
+	                <div class="spinner-grow text-primary" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-secondary" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-success" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-danger" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-warning" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-info" role="status">
+					  <span class="sr-only"></span>
+					</div>
+					<div class="spinner-grow text-dark" role="status">
+					  <span class="sr-only"></span>
+					</div>
+				</div>
+            </div>
+            <div class="col">
+                <!--<h1 class="font-weight-light">Business Name or Tagline</h1-->
+                <div>Output:</div>
+                <textarea id="output" style="width: 100%;font-size:12px" rows="20" disabled="disabled"></textarea>
+            </div>
+        </div>
+
+  <script>
+	function loadTableData(tableName)
+   	    {
+		  	
+		}
+  </script>
+
+
+  <script>
+   	    function loadTableDataOld(tableName, columns,thtElement)
+   	    {
+   	    	var table = document.getElementById('table');
+		    var tableBody = document.getElementById('tbody');
+		    tableBody.innerHTML = '';
+			var row = document.createElement('tr');
+			columns.forEach(function(column) {
+		    
+		    	 var cell = document.createElement('th');
+			     cell.appendChild(document.createTextNode(column));
+			     row.appendChild(cell);
+			     console.log('column:' +column);
+		    });
+            tableBody.appendChild(row);
+
+			var gr = new GlideRecord(tableName);
+			gr.query(); 
+			console.log("gr contenxt:" + gr);
+			var counter = 0;
+			var d ={};
+			for (var column in columns){
+				d[column] = [];
+			}
+			while(gr.next()) { 
+				 counter+=1;
+			     
+			     //output.value += gr.number  + "\n";
+			     if (counter%thtElement==0){
+				     var row = document.createElement('tr');
+
+				     columns.forEach(function(columnName) {
+					     var cell = document.createElement('td');
+					     cell.appendChild(document.createTextNode(gr[columnName]));
+					     d[column].push(gr[columnName])
+					     row.appendChild(cell);
+					});
+
+				    tableBody.appendChild(row);
+				}
+			}
+		}
+		
+	
+		function loadTableDataForClick(){
+			//loadTableData('incident', ['number','short_description', 'priority']);
+			var tableName = document.getElementById('tableNameInput').value;
+
+			var columns = [];//Object.keys(data[0]);
+		    console.log('columns:'+ columns);
+		    var thtElement = 6;
+
+			// Override and use limited column names
+			if (tableName=='sn_vtb_ah_hr_criticality_4k'){
+				columns = ['sys_id','u_description', 'u_hr_intelliroute_intent__1_','u_criticality'];
+				thtElement = 150;
+			}
+			else if (tableName=='incident'){
+				columns = ['number','short_description','description', 'category', 'severity', 'priority'];
+			}
+			loadTableDataOld(tableName,columns,thtElement);
+            document.getElementById("divPlot").style.visibility = 'visible';
+			
+			/*data = loadTableData(tableName);
+			console.log('tableName: ' + tableName);
+			console.log("loadedJson" + loadedJson);
+			var data = JSON.parse(loadedJson)['result'];
+
+			console.log("data" + data);
+			var table = document.getElementById('table');
+		    var tableBody = document.getElementById('tbody');
+		    var row = document.createElement('tr');
+		    
+
+			console.log('columns:'+ columns);
+		 
+		    columns.forEach(function(column) {
+		    
+		    	 var cell = document.createElement('th');
+			     cell.appendChild(document.createTextNode(column));
+			     row.appendChild(cell);
+			     console.log('column:' +column);
+		    });
+            tableBody.appendChild(row);
+
+            var counter = 0;
+			data.forEach(function(rowData) {
+		    
+		    	console.log("rowData" + rowData);
+		    	if (counter%100==0){
+
+                var row = document.createElement('tr');
+
+		    	columns.forEach(function(column) {
+		    		
+		    	 	var cellData = rowData[column];
+		    	 	console.log(column+ ""+ cellData);
+		    	 	
+		    	 	var cell = document.createElement('td');
+					cell.appendChild(document.createTextNode(cellData));
+					row.appendChild(cell);
+		    	  });
+
+				 tableBody.appendChild(row);
+				}
+
+		    });*/
+			
+			
+			//loadTableData(tableName, columns);
+		}
+		//loadTableData('incident', ['number','short_description', 'priority']);
+	</script>
+
+	<script>
+	$("#loadDataButton" ).click(function() {
+	  alert("Handler for .click() called." );
+	});
+	
+    </script>
+	<script>$(document).ready(function () {
+
+        $('#table').DataTable();
+	});
+</script>
+	<script>
+		function createTable(tableData) {
+		  
+
+		  tableData.forEach(function(rowData) {
+		    var row = document.createElement('tr');
+
+		    rowData.forEach(function(cellData) {
+		      var cell = document.createElement('td');
+		      cell.appendChild(document.createTextNode(cellData));
+		      row.appendChild(cell);
+		    });
+
+		    tableBody.appendChild(row);
+		  });
+
+		  table.appendChild(tableBody);
+		  document.body.appendChild(table);
+		}
+
+		//createTable([["row 1, cell 1", "row 1, cell 2"], ["row 2, cell 1", "row 2, cell 2"]]);
+	</script>
+
+
+<script>
+
+
+var requestBody = "";
+
+var client=new XMLHttpRequest();
+client.open("get","http://localhost:8080/api/now/table/incident");
+
+client.setRequestHeader('Accept','application/json');
+client.setRequestHeader('Content-Type','application/json');
+
+//Eg. UserName="admin", Password="admin" for this code sample.
+client.setRequestHeader('Authorization', 'Basic '+btoa('admin'+':'+'admin'));
+
+client.onreadystatechange = function() {
+	if(this.readyState == this.DONE) {
+	//document.getElementById("response").innerHTML=this.status + this.response;
+	  loadedJson = this.response;
+	  //console.log(JSON.parse(loadedJson));
+	}
+};
+client.send(requestBody);
+</script>
+
+    <script>
+    	document.getElementById("runButton").disabled = true;
+    	document.getElementById("initilizingGif").style.visibility = 'visible';
+
+		const output = document.getElementById("output");
+		const code = document.getElementById("code");
+		const packages = ['matplotlib', 'pandas', 'numpy', 'scikit-learn'];
+		//const packages = [];
+
+
+		function addToOutput(s) {
+			output.value += ">>>" + s + "\n"; //+ code.value + "\n" + s + "\n";
+		}
+
+		output.value = "Initializing...\n";
+		// init Pyodide
+		async function main() {
+			pyodide = await loadPyodide();
+			await pyodide.loadPackage(packages[0]);
+			output.value += ' ' + packages[0] + '\n';
+			await pyodide.loadPackage(packages[1]);
+			output.value += ' ' + packages[1] + '\n';
+			await pyodide.loadPackage(packages[2]);
+			output.value += ' ' + packages[2] + '\n';
+			await pyodide.loadPackage(packages[3]);
+			output.value += ' ' + packages[3] + '\n';
+			output.value += "Ready!\n";
+			document.getElementById("runButton").disabled = false;
+			document.getElementById("initilizingGif").style.visibility = 'hidden';
+
+			return pyodide;
+		}
+		async function plotData() {
+		 
+		
+		 let pyodide = await pyodideReadyPromise;
+		  pyodide.runPython(`
+			import matplotlib
+			import numpy as np
+			import pandas as pd
+			matplotlib.use("module://matplotlib.backends.html5_canvas_backend")
+			import matplotlib.cm as cm
+			from matplotlib import pyplot as plt
+			df = pd.DataFrame.from_dict(json.loads(data)['result'])
+
+			plt.figure()
+			plt.hist(df['category'])
+			plt.show()
+		    `);
+		}
+
+		let pyodideReadyPromise = main();
+
+		
+
+		async function evaluatePython() {
+			const start = Date.now();
+			//document.getElementById("inProgressGif").style.visibility = 'visible';
+            //document.getElementById("runButton").disabled = true;
+			let pyodide = await pyodideReadyPromise;
+			pyodide.globals.set("data", loadedJson);
+
+			try {
+				
+				let output = pyodide.runPython(code.value);
+				const duration = Date.now() - start;
+				addToOutput(output + ' [ executed in ' + duration.toFixed(0) + ' ms]');
+
+			} catch (err) {
+				addToOutput(err);
+			}
+			//document.getElementById("runButton").disabled = false;
+			//document.getElementById("inProgressGif").style.visibility = 'hidden';
+
+		}
+    </script>
+    </body>
+</j:jelly>
+
+
