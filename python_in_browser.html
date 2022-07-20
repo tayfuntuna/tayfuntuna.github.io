@@ -25,7 +25,7 @@
         <div class="row" style ='padding-left: 10px; padding-right: 10px;'>
         	<br/>
         </div>
-         <div class="row">
+         <div class="row" style='visibility: hidden;'>
             <div class="col">
 		        <div class="input-group mb-3">
 		          <span class="input-group-text" id="basic-addon1">Enter table name:</span>
@@ -165,8 +165,11 @@ metrics.classification_report(df[label_column].tail(30), predicted)
             </div>
             <div class="col">
                 <!--<h1 class="font-weight-light">Business Name or Tagline</h1-->
-                <div>Output:</div>
-                <textarea id="output" style="width: 100%;font-size:12px" rows="20" disabled="disabled"></textarea>
+		</br/>
+		<div class="row">
+                    <div>Output:</div>
+                    <textarea id="output" style="width: 100%;font-size:11px" rows="50" disabled="disabled"></textarea>
+		    </div>
             </div>
         </div>
 
