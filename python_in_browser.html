@@ -29,7 +29,7 @@
             <div class="col">
 		        <div class="input-group mb-3">
 		          <span class="input-group-text" id="basic-addon1">Enter table name:</span>
-				  <input type="text" id ='tableNameInput' class="form-control" placeholder="Enter Table name" aria-label="Table name" aria-describedby="button-addon2" value='sn_vtb_ah_hr_criticality_4k' text = 'sn_vtb_ah_hr_criticality_4k'/>
+				  <input type="text" id ='tableNameInput' class="form-control" placeholder="Enter Table name" aria-label="Table name" aria-describedby="button-addon2" value='' text = ''/>
 				  <button class="btn btn-info" type="button" id="loadDataButton" onclick="loadTableDataForClick()">Load Data</button>
 				 </div>
 	       </div>
@@ -59,7 +59,7 @@
             <div class="col">
             	<div id ='response'/>
             	</div>
-            	<div id ='divPlot' style='visibility: hidden;' class="col">
+            	<div id ='divPlot' style='visibility: ahidden;' class="col">
             	  <button class="btn btn-danger" type="button" id="plotData" onclick="plotData()"> <i class="bi bi-graph-up"></i>  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-bar-graph" viewBox="0 0 16 16">
   <path d="M4.5 12a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1zm3 0a.5.5 0 0 1-.5-.5v-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-1z"/>
   <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
@@ -82,11 +82,14 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
+			
+import matplotlib								
+matplotlib.use("module://matplotlib.backends.html5_canvas_backend")
+import matplotlib.cm as cm
+from matplotlib import pyplot as plt
 
-df = pd.DataFrame.from_dict(json.loads(data)['result'])
-df.columns
-df.head(5)
-df['description']
+df = pd.DataFrame({"priority":[1,2,1,2,3,3,1], 
+		   "description": ["this is critical", "it is normal", "urgent please", "it is ok then.", "not important", "all good", "life death issue" ]})
 source_column = 'description'
 label_column = 'priority'
 text_clf = Pipeline([
@@ -101,8 +104,12 @@ docs_test = df[source_column].tail(30)
 predicted = text_clf.predict(docs_test)
 np.mean(predicted == df[label_column].tail(30))
 
+"""
+plt.figure()
+plt.hist(df[label_column])
+plt.show()
+"""
 metrics.classification_report(df[label_column].tail(30), predicted)
-
 
                    </textarea>
                 <button id ='runButton' class="btn btn-primary" onclick="evaluatePython0()">Run</button>
