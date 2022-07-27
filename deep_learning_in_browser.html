@@ -12,16 +12,13 @@ const tf = require('@tensorflow/tfjs');
 <script>
 const loadMetadata = async () => {
 	const metadata = await fetch(
-	"https://storage.googleapis.com/tfjs-models/tfjs/sentiment_
-	cnn_v1/metadata.json"
-	);
+	"https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json");
 	return metadata.json();
 };
 </script>
 <script>
 const loadModel = async () => {
-	const url = `https://storage.googleapis.com/tfjs-models/tfjs/
-	sentiment_cnn_v1/model.json`;
+	const url = "https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json";
 	const model = await tf.loadLayersModel(url);
 	return model;
 };
