@@ -1,6 +1,5 @@
 
-<script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs'>
-</script>
+<script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs'></script>
 
 <label for="text">Text</label>
 <input type="text" name="text" />
@@ -8,34 +7,41 @@
 
 <script>
 const tf = require('@tensorflow/tfjs');
-	
+</script>
+
+<script>
 const loadMetadata = async () => {
-const metadata = await fetch(
-"https://storage.googleapis.com/tfjs-models/tfjs/sentiment_
-cnn_v1/metadata.json"
-);
-return metadata.json();
+	const metadata = await fetch(
+	"https://storage.googleapis.com/tfjs-models/tfjs/sentiment_
+	cnn_v1/metadata.json"
+	);
+	return metadata.json();
 };
+</script>
+<script>
 const loadModel = async () => {
-const url = `https://storage.googleapis.com/tfjs-models/tfjs/
-sentiment_cnn_v1/model.json`;
-const model = await tf.loadLayersModel(url);
-return model;
+	const url = `https://storage.googleapis.com/tfjs-models/tfjs/
+	sentiment_cnn_v1/model.json`;
+	const model = await tf.loadLayersModel(url);
+	return model;
 };
+</script>
+
+<script>
 const padSequences = (sequences, metadata) => {
-return sequences.map((seq) => {
-if (seq.length > metadata.max_len) {
-seq.splice(0, seq.length - metadata.max_len);
-}
-if (seq.length < metadata.max_len) {
-const pad = [];
-for (let i = 0; i < metadata.max_len - seq.length; ++i) {
-pad.push(0);
-}
-seq = pad.concat(seq);
-}
-return seq;
-});
+	return sequences.map((seq) => {
+		if (seq.length > metadata.max_len) {
+			seq.splice(0, seq.length - metadata.max_len);
+		}
+		if (seq.length < metadata.max_len) {
+			const pad = [];
+			for (let i = 0; i < metadata.max_len - seq.length; ++i) {
+				pad.push(0);
+			}
+			seq = pad.concat(seq);
+		}
+		return seq;
+	});
 };
 
 
@@ -82,11 +88,14 @@ sum += parseFloat(perc, 10);
 });
 console.log(getSentiment(sum / text.length));
 };
+</script>
+
+<script>
 window.onload = () => {
-const inputText = document.getElementsByTagName("input")[0];
-const button = document.getElementsByTagName("button")[0];
-button.onclick = () => {
-run([inputText.value]);
-};
+	const inputText = document.getElementsByTagName("input")[0];
+	const button = document.getElementsByTagName("button")[0];
+	button.onclick = () => {
+		run([inputText.value]);
+		};
 };
 </script>
