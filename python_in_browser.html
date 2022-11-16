@@ -9,8 +9,13 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
       
     	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
- 
+     <link rel="stylesheet" href="code_editor/codemirror.css">
+    <link rel="stylesheet" href="code_editor/show-hint.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="code_editor/index.css">
+	    
         <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+	    
         <script src="https://cdn.jsdelivr.net/pyodide/v0.20.0/full/pyodide.js"></script>
         <script> 
         	var loadedJson = '';
@@ -430,7 +435,63 @@ client.send(requestBody);
 
 		}
     </script>
+
+
+<div class="editor">
+        <div id="resizeMe" class="code a">
+            <div class="html-code"></div>
+        </div>
+        <div class="code pa">
+            <iframe id="preview-window"></iframe>
+        </div>
+    </div>
     </body>
+
+<script src="code_editor/codemirror.js"></script>
+<script src="code_editor/formatting.js"></script>
+<script src="code_editor/show-hint.js"></script>
+<script src="code_editor/xml-hint.js"></script>
+<script src="code_editor/html-hint.js"></script>
+<script src="code_editor/xml.js"></script>
+<script src="code_editor/javascript.js"></script>
+<script src="code_editor/css.js"></script>
+<script src="code_editor/htmlmixed.js"></script>
+<script src="code_editor/python.js"></script>
+<script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script>
+    Split(['.a', '.pa'])
+    var htmlEditor = CodeMirror(document.querySelector(".editor .code .html-code"), {
+        mode: "python",
+        tabSize: 4,
+        lineNumbers: true,
+        extraKeys: { "Ctrl-Space": "autocomplete" }
+    });
+    CodeMirror.commands["selectAll"](htmlEditor);
+
+    function getSelectedRange() {
+        return { from: htmlEditor.getCursor(true), to: htmlEditor.getCursor(false) };
+    }
+
+    function autoFormatSelection() {
+        var range = getSelectedRange();
+        htmlEditor.autoFormatRange(range.from, range.to);
+    }
+
+    function commentSelection(isComment) {
+        var range = getSelectedRange(), selStart = htmlEditor.getCursor("start");
+        htmlEditor.commentRange(isComment, range.from, range.to);
+        htmlEditor.setSelection(selStart, htmlEditor.getCursor("end"));
+    }
+    document.querySelector("#run-btn").addEventListener("click", function () {
+        let htmlCode = htmlEditor.getValue();
+        let previewWindow = document.querySelector("#preview-window").contentWindow.document;
+        previewWindow.open();
+        previewWindow.write(htmlCode);
+        previewWindow.close();
+    });
+</script>
 </j:jelly>
 
 
